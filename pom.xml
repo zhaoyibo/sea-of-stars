@@ -10,6 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>hexo</module>
+        <module>dingtalk-robot</module>
     </modules>
 
     <name>sea-of-stars</name>
