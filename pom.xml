@@ -11,6 +11,7 @@
     <modules>
         <module>hexo</module>
         <module>dingtalk-robot</module>
+        <module>runff</module>
     </modules>
 
     <name>sea-of-stars</name>
