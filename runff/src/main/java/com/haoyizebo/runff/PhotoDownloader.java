@@ -1,6 +1,7 @@
 package com.haoyizebo.runff;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import okhttp3.*;
@@ -104,24 +105,27 @@ public class PhotoDownloader {
         }
     }
 
+    public void downloadFavWithoutWatermark() {
+        down(getFavPhotoList(), "https://www.runff.com", Paths.get(dir, "fav-without-watermark"));
+    }
 
     public void downloadAllWithWatermark() {
-        down(getPhotoList(), "https://p.chinarun.com", Paths.get(dir, "with-watermark"));
+        downloadWithWatermark(getPhotoList());
     }
 
     public void downloadWithWatermark(List<Photo> photos) {
-        down(photos, "https://p.chinarun.com", Paths.get(dir, "with-watermark"));
+        down(photos.stream().map(Photo::getBig).collect(Collectors.toList()), "https://p.chinarun.com", Paths.get(dir, "with-watermark"));
     }
 
     public void downloadAllWithoutWatermark() {
-        down(getPhotoList(), "https://www.runff.com", Paths.get(dir, "without-watermark"));
+        downloadWithoutWatermark(getPhotoList());
     }
 
     public void downloadWithoutWatermark(List<Photo> photos) {
-        down(photos, "https://www.runff.com", Paths.get(dir, "without-watermark"));
+        down(photos.stream().map(Photo::getBig).collect(Collectors.toList()), "https://www.runff.com", Paths.get(dir, "without-watermark"));
     }
 
-    private void down(List<Photo> photos, String domain, Path dir) {
+    private void down(List<String> paths, String domain, Path dir) {
         int skipCount = 0;
         int successCount = 0;
         int failureCount = 0;
@@ -138,16 +142,15 @@ public class PhotoDownloader {
             System.out.println("文件夹 " + dirFile.getAbsolutePath() + " 已存在。");
         }
 
-        for (Photo photo : photos) {
-            String big = photo.getBig();
-            String fileName = big.substring(big.lastIndexOf('/') + 1);
+        for (String path : paths) {
+            String fileName = path.substring(path.lastIndexOf('/') + 1);
             File file = new File(dirFile, fileName);
             if (file.exists()) {
                 skipCount++;
                 continue;
             }
 
-            String url = domain + big;
+            String url = domain + path;
             System.out.println("开始下载：" + url);
             Request request = new Request.Builder()
                     .get()
@@ -195,6 +198,41 @@ public class PhotoDownloader {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<String> getFavPhotoList() {
+        long l = System.currentTimeMillis();
+        int pid = Integer.parseInt(sid.substring(1));
+        String url = "https://app.chinarun.com/html/apiuser/api.ashx?method=photo&action=getfavphotolist&callback=jQuery112408491772726405646_" + l + "&pageindex=1&pid=" + pid + "&_=" + l;
+        Headers headers = new Headers.Builder()
+                .add("X-Requested-With", "XMLHttpRequest")
+                .add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/7.0.15(0x17000f25) NetType/WIFI Language/zh_CN miniProgram")
+                .add("Referer", "https://app.chinarun.com/shtml/app/html/user/photo_fav.html")
+                .add("Host", "app.chinarun.com")
+                .add("Cookie", cookie)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .headers(headers)
+                .build();
+        List<String> paths = new ArrayList<>();
+        try (Response response = okHttpClient.newCall(request).execute()) {
+            String ret = Objects.requireNonNull(response.body()).string();
+            String json = ret.substring(42, ret.length() - 1);
+            JsonNode jsonNode = jsonMapper.readTree(json);
+            JsonNode list = jsonNode.get("data").get("list");
+            list.elements().forEachRemaining(node -> {
+                String img = node.get("img").asText();
+                img = img.replace("//p.chinarun.com", "");
+                img = img.replace("/small/", "/big/");
+                img = img.substring(0, img.lastIndexOf('?'));
+                paths.add(img);
+            });
+        } catch (IOException e) {
+            System.err.println("获取收藏列表失败 pid：" + pid);
+        }
+        return paths;
     }
 
 }
