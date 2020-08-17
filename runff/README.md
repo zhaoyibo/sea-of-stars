@@ -1,9 +1,11 @@
 ## 使用说明
 
 **首先在手机上**
+
 0. 用微信关注公众号"跑步维生素"，找到对应赛事的照片入口，通过"人脸识别"或"查找号码牌"添加出要下载的照片列表
 
 **然后在电脑上**
+
 1. 使用 Chrome 打开 https://www.runff.com/html/live/event.html
 3. 选择你下载照片的赛事（这时会跳到登录页）
 2. 先打开 Chrome 的"开发者工具"（右侧三个点-更多工具-开发者工具），勾选 XHR
@@ -21,3 +23,5 @@
     ```shell script
     java -jar App.jar "s2746" "ASP.NET_SessionId=ccc; bxmssmemberinfo=userinfo=aaa; SERVERID=yyyy|zzzz|xxxx" "/Users/yibo/Downloads/168"
     ```
+ 
+> 如果要下载「我的-收藏照片」里的，下载源码然后把 `downloader.downloadFavWithoutWatermark();` 注释打开。
