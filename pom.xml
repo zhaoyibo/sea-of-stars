@@ -12,6 +12,7 @@
         <module>hexo</module>
         <module>dingtalk-robot</module>
         <module>runff</module>
+        <module>8264</module>
     </modules>
 
     <name>sea-of-stars</name>
