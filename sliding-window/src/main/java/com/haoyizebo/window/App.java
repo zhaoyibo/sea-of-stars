@@ -6,7 +6,7 @@ package com.haoyizebo.window;
  */
 public class App {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
 
     }
 
