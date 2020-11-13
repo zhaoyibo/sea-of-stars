@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.List;
+
 /**
  * markdown 类型
  * <p>
@@ -43,6 +45,11 @@ public class MarkdownMessage extends BaseMessage implements HasAt {
     public static class Markdown {
         private String title;
         private String text;
+
+        public Markdown(String title, List<String> lines) {
+            this.title = title;
+            this.text = String.join("\n\n", lines);
+        }
     }
 
 
