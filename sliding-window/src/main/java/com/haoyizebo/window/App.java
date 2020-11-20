@@ -9,7 +9,7 @@ import com.haoyizebo.window.model.TimeWindow;
 public class App {
 
     public static void main(String[] args) {
-        TimeWindow timeWindow = TimeWindow.parse("[w1;2h;100]");
+        TimeWindow timeWindow = TimeWindow.parse("w1;2h;100");
         boolean ok = timeWindow.incrThenCompare("1", 100, 1000);
     }
 
