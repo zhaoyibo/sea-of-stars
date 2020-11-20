@@ -180,7 +180,7 @@ public class TimeWindow {
     private static final IWindow SLIDING = new SlidingWindow();
 
     /**
-     * 先判断，再累加。
+     * 先累加，再判断。
      * 比如 threshold=100
      * 第一次 amount=50: 先判断 redis.get + 50 < 100（0+50, true），再 redis+50（=50），返回 true
      * 第二次 amount=20: 先判断 redis.get + 20 < 100（50+20, true），再 redis+20（=70），返回 true
