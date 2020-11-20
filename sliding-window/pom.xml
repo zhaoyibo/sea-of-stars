@@ -17,6 +17,11 @@
             <artifactId>QLExpress</artifactId>
             <version>3.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.aliyun.tair</groupId>
+            <artifactId>alibabacloud-tairjedis-sdk</artifactId>
+            <version>1.2.0</version>
+        </dependency>
     </dependencies>
 
 </project>

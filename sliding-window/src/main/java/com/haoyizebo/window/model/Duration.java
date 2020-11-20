@@ -1,5 +1,6 @@
 package com.haoyizebo.window.model;
 
+import com.haoyizebo.window.exception.WindowException;
 import lombok.Data;
 
 import java.util.HashMap;
@@ -10,10 +11,10 @@ import java.util.regex.Pattern;
 
 /**
  * @author yibo
- * @since 2020-10-26
+ * @since 2020-11-02
  */
 @Data
-public class Duration {
+class Duration {
 
     private int days;
     private int hours;
@@ -83,7 +84,7 @@ public class Duration {
     public static Duration parse(String text) {
         String[] arr = PATTERN.split(text);
         if (arr.length % 2 != 0) {
-            throw new IllegalArgumentException();
+            throw new WindowException("周期格式有误：" + text);
         }
         Duration duration = new Duration();
         for (int i = 0; i < arr.length; i += 2) {
