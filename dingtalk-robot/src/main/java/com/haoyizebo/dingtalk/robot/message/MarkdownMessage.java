@@ -48,7 +48,7 @@ public class MarkdownMessage extends BaseMessage implements HasAt {
 
         public Markdown(String title, List<String> lines) {
             this.title = title;
-            this.text = String.join("\n\n", lines);
+            this.text = String.join(LINE_SEPARATOR, lines);
         }
     }
 

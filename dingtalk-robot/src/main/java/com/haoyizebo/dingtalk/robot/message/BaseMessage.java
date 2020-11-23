@@ -14,6 +14,8 @@ import lombok.Getter;
  */
 public abstract class BaseMessage implements IMessage {
 
+    protected static final String LINE_SEPARATOR = "\n\n";
+
     @Getter
     @JsonProperty("msgtype")
     private final String msgType;
