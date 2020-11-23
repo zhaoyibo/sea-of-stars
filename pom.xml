@@ -13,7 +13,7 @@
         <module>dingtalk-robot</module>
         <module>runff</module>
         <module>8264</module>
-        <module>sliding-window</module>
+        <module>time-window</module>
     </modules>
 
     <name>sea-of-stars</name>
