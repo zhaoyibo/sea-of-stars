@@ -24,7 +24,7 @@ public abstract class BaseMessage implements IMessage {
         this.msgType = msgType;
     }
 
-    private static final ObjectMapper objectMapper = JsonMapper.builder()
+    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder()
             .enable(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS)
             .serializationInclusion(JsonInclude.Include.NON_NULL)
             .build();
@@ -33,7 +33,7 @@ public abstract class BaseMessage implements IMessage {
     @Override
     public String toJson() {
         try {
-            return objectMapper.writeValueAsString(this);
+            return OBJECT_MAPPER.writeValueAsString(this);
         } catch (JsonProcessingException e) {
             return null;
         }
