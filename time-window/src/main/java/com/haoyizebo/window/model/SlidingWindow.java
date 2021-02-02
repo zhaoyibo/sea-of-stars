@@ -1,6 +1,7 @@
 package com.haoyizebo.window.model;
 
 import com.aliyun.tair.tairhash.TairHash;
+import com.aliyun.tair.tairhash.params.ExhincrByParams;
 import com.haoyizebo.window.constant.WindowTypeEnum;
 
 /**
@@ -73,19 +74,14 @@ class SlidingWindow extends AbstractWindow implements IWindow {
     private void doIncr(TairHash tairHash, String redisKey, String field, long amount, int seconds) {
         // 当 amount == 0 时，incr 无意义
         if (amount != 0) {
-            Long val = tairHash.exhincrBy(redisKey, field, amount);
-            if (val == amount) {
-                // 理论上 val == amount 只出现在第一次时候，
-                // 但为了避免 -1 + 1 + 1 这样类似 ABA 问题，再 ttl 一次
-                // exhttl 返回值说明：
-                //      key或者field不存在：-2。
-                //      field存在但是没有设置过期时间：-1。
-                //      field存在且设置了过期时间：过期时间，单位为秒。
-                Long exhttl = tairHash.exhttl(redisKey, field);
-                if (exhttl != null && exhttl == -1) {
-                    tairHash.exhexpire(redisKey, field, seconds);
-                }
-            }
+            // exhttl 返回值说明：
+            //      key或者field不存在：-2。
+            //      field存在但是没有设置过期时间：-1。
+            //      field存在且设置了过期时间：过期时间，单位为秒。
+            Long exhttl = tairHash.exhttl(redisKey, field);
+            // TairHash.exhincrBy 会清除 ttl，故每次都要重新设置过期时间
+            int expire = exhttl != null && exhttl > 0 ? exhttl.intValue() : seconds;
+            tairHash.exhincrBy(redisKey, field, amount, new ExhincrByParams().ex(expire));
         }
     }
 
